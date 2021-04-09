@@ -40,33 +40,39 @@ let appData = {
       appData.expenses[response1] = +response2;
     }
   },
+  
   getExpensesMonth: function () {
     for (let key in appData.expenses) {
       appData.expensesMonth += +appData.expenses[key];
     }
   },
+
   getBudget: function () {
     appData.budgetMonth = parseInt(appData.budget) - parseInt(appData.expensesMonth);
     appData.budgetDay = Math.floor(appData.budgetMonth / 30);
   },
+
   getTargetMonth: function () {
-    let period = Math.ceil(appData.mission/ appData.budgetMonth);
+    let period = Math.ceil(appData.mission / appData.budgetMonth);
+    
     appData.period = period;
       if (period < 0) {
         return ('Цель не будет достигнута');
-      }
+    }
+    
     return (`Цель будет достигнута через:  ${period} мес`);
   },
+
   getStatusIncome: function () {
     if (appData.budgetMonth > 1200) {
-    return ('У вас высокий уровень дохода');
-  } else if (appData.budgetMonth > 600) {
-    return ('У вас средний уровень дохода');
-  } else if (appData.budgetMonth > 0) {
-    return ('К сожалению у вас уровень дохода ниже среднего');
-  } else {
-    return ('Что то пошло не так');
-  }
+      return ('У вас высокий уровень дохода');
+    } else if (appData.budgetMonth > 600) {
+      return ('У вас средний уровень дохода');
+    } else if (appData.budgetMonth > 0) {
+      return ('К сожалению у вас уровень дохода ниже среднего');
+    } else {
+      return ('Что то пошло не так');
+    }
   },
 };
 
