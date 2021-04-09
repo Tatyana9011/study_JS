@@ -1,80 +1,83 @@
 "use strict";
+
 let isNumber = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
 let money,
-  income = 'Фриланс',
-  addExpenses = [],
-  deposit = confirm('Есть ли у вас депозит в банке?'),
-  mission = 1000000,
-  lowerHeister = addExpenses;
+    start = function () {
+      do {
+        money = +prompt('Ваш месячный доход?');
+      }
+      while (!isNumber(money));
+    };
 
-let showTypeOf = function (data) {
-  console.log(data, typeof (data));
-};
+start();
 
-let start = function () {
-  do {
-    money = +prompt('Ваш месячный доход?');
-  } while (!isNumber(money));
-};
+let appData = {
+  income: {},
+  addIncome: [],
+  expenses: {},
+  addExpenses: [],
+  deposit: false,
+  mission: 50000,
+  period: 3,
+  budget: money,
+  budgetDay : 0 ,
+  budgetMonth: 0,
+  expensesMonth:0,
+  asking: function () {
+    let addExpenses = prompt('Перечислите возможные расходы через запятую');
+        appData.addExpenses = addExpenses.toLowerCase().split(',');
+        appData.deposit = confirm('Есть ли у вас депозит в банке?');
 
-function getExpenses() {
- let expenses = prompt(`Сколько будет стоить расходы ?`);
-
-  if (!isNumber(expenses)) {
-   return getExpenses();
-  }
-  return +expenses;
-}
-
-function getExpensesMonth() {
-  let sum = 0;
-
-  for (let i = 0; i < 2; i++){
-    addExpenses[i] = prompt('Введите обязательную статью расходов?' );
-    sum += getExpenses();
-  }
-  return sum;
-}
-
-function getAccumulatedMonth (incomeAll, expenses) {
-  return incomeAll - expenses;
-}
-
-function getTargetMonth(dream, budgetMonth) {
-  let period = Math.ceil(dream / budgetMonth);
-  if (period < 0) {
-     return ('Цель не будет достигнута');
-   }
-  return (`Цель будет достигнута через:  ${period} мес`);
-}
-
-let getStatusIncome = function (budget) {
-  if (budget > 1200) {
+    for (let i = 0; i < 2; i++){
+     let response1 = prompt('Введите обязательную статью расходов?');
+     let response2 = prompt(`Сколько будет стоить расходы ?`);
+      while (!isNumber(response2)) {
+         response2 = prompt('Это не число! Сколько будет стоить расходы, напишите цифрами?');
+      }
+      appData.expenses[response1] = +response2;
+    }
+  },
+  getExpensesMonth: function () {
+    for (let key in appData.expenses) {
+      appData.expensesMonth += +appData.expenses[key];
+    }
+  },
+  getBudget: function () {
+    appData.budgetMonth = parseInt(appData.budget) - parseInt(appData.expensesMonth);
+    appData.budgetDay = Math.floor(appData.budgetMonth / 30);
+  },
+  getTargetMonth: function () {
+    let period = Math.ceil(appData.mission/ appData.budgetMonth);
+    appData.period = period;
+      if (period < 0) {
+        return ('Цель не будет достигнута');
+      }
+    return (`Цель будет достигнута через:  ${period} мес`);
+  },
+  getStatusIncome: function () {
+    if (appData.budgetMonth > 1200) {
     return ('У вас высокий уровень дохода');
-  } else if (budget > 600) {
+  } else if (appData.budgetMonth > 600) {
     return ('У вас средний уровень дохода');
-  } else if (budget > 0) {
+  } else if (appData.budgetMonth > 0) {
     return ('К сожалению у вас уровень дохода ниже среднего');
   } else {
     return ('Что то пошло не так');
   }
+  },
 };
 
-start();
-let expensesAmount = getExpensesMonth();
-let accumulatedMonth = getAccumulatedMonth(money, expensesAmount);
-let budgetDay = accumulatedMonth / 30;
+appData.asking();
+appData.getExpensesMonth();
+appData.getBudget();
+console.log( 'Расходы за месяц', appData.expensesMonth);
+console.log(appData.getTargetMonth());
+console.log(appData.getStatusIncome());
 
-showTypeOf(money);
-showTypeOf(income);
-showTypeOf(deposit);
-console.log('Общие расходы за месяц: ', expensesAmount);
-console.log('список расходов:', addExpenses);
-console.log('Расходы в месяц: ', getExpensesMonth());
-console.log(getTargetMonth(mission, accumulatedMonth));
-console.log('Бюджет на день', Math.floor(budgetDay));
-console.log(getStatusIncome(budgetDay));
+for (let key in appData) {
+  console.log("Наша программа включает в себя данные: ", key + ' :' + appData[key]);
+}
 
