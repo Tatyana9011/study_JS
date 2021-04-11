@@ -15,7 +15,6 @@ const getNumber = function (...str) {
   }
   alert('Кажется вы ввели не число! Попробуйте еще раз!');
   getNumber(...str);
-
 };
 
 const getString = function (...str) {
@@ -107,12 +106,14 @@ let appData = {
       return ('Что то пошло не так');
     }
   },
+
   getInfoDeposit: function () {
     if (appData.deposit) {
       appData.percentDeposit =getNumber('Какой годовой процент депозита?', '9');
       appData.moneyDeposit = getNumber('Какой сумма заложена?',10000);
     }
   },
+  
   calcSavedMoney: function () {
     return appData.budgetMonth * appData.period;
   }
