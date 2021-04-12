@@ -1,4 +1,29 @@
 "use strict";
+const btnStart = document.getElementById("start");
+const incomeAdd = document.getElementsByTagName('button')[0];
+const expensesAdd = document.getElementsByTagName('button')[1];
+const depositCheck = document.querySelector('#deposit-check');
+const additionalExpensesItem = document.querySelectorAll('.additional_expenses-item');
+const budgetDayValue = document.getElementsByClassName('budget_day-value');
+const expensesMonthValue = document.getElementsByClassName('expenses_month-value');
+const additionalIncomeValue = document.getElementsByClassName('additional_income-value');
+const additionalExpensesValue = document.getElementsByClassName('additional_expenses-value');
+const incomePeriodValue = document.getElementsByClassName('income_period-value');
+const targetMonthValue = document.getElementsByClassName('target_month-value');
+const salaryAmount = document.querySelector('.salary-amount');
+const incomeTitle = document.querySelector('.income-title');
+const incomeAmount = document.querySelector('.income-amount');
+const additionalIncomeItem = document.querySelectorAll('.additional_income-item');
+const expensesTitle= document.querySelector('.expenses-title');
+const expensesAmount = document.querySelector('.expenses-amount');
+//const depositAmount = document.querySelector('.deposit-amount');
+//const depositPercent= document.querySelector('.deposit-percent');
+const targetAmount = document.querySelector('.target-amount');
+const periodSelect = document.querySelector('.period-select');
+
+
+
+
 
 const isNumber = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
@@ -67,16 +92,16 @@ let appData = {
 
     for (let i = 0; i < 2; i++){
 
-      let response1 = getString('Введите обязательную статью расходов?', 'Pыбалка'),
+      let response1 = getString('Введите обязательную статью расходов?'),
           response2 = getNumber('Во сколько это обойдется?', 2000);
       
-          appData.expenses[response1] = +response2;
+          appData.expenses[response1] = response2;
     }
   },
 
   getExpensesMonth: function () {
     for (let key in appData.expenses) {
-      appData.expensesMonth += +appData.expenses[key];
+      appData.expensesMonth += appData.expenses[key];
     }
   },
 
@@ -120,8 +145,10 @@ let appData = {
 };
 
 appData.asking();
+appData.getInfoDeposit();
 appData.getExpensesMonth();
 appData.getBudget();
+
 console.log( 'Расходы за месяц ' + appData.expensesMonth);
 console.log(appData.getTargetMonth());
 console.log(appData.getStatusIncome());
