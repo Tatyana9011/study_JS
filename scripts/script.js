@@ -99,7 +99,9 @@ let appData = {
     this.percentDeposit =  0;
     this.moneyDeposit =  0;
     this.budgetMonth =  0;
-    this.expensesMonth =  0;
+    this.expensesMonth = 0;
+    this.showResult();
+    targetMonthValue.value = "";
   },
    
   //показываем значения на странице
@@ -109,8 +111,8 @@ let appData = {
     expensesMonthValue.value = this.expensesMonth;
     additionalExpensesValue.value = this.addExpenses.join(', ');
     additionalIncomeValue.value = this.addIncome.join(', ');
-    targetMonthValue.value = this.getTargetMonth();
     incomePeriodValue.value = this.calcPeriod();
+    targetMonthValue.value = this.getTargetMonth();
   },
   //блок с расходами с пустыми импутами
   addExpensesBlock: function () {
@@ -130,6 +132,7 @@ let appData = {
     cloneIncomeItem.childNodes.forEach(item => {
       item.value = '';
     });
+    
     incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
     incomeItems = document.querySelectorAll('.income-items');
 
@@ -214,21 +217,21 @@ let appData = {
   }
 };
 
-//Валидация значений
+//Валидация значений формы
 let data = document.querySelector('.data');
 let input = data.querySelectorAll('input');
 input.forEach(item => {
   item.addEventListener('change', event => {
     let target = event.target;
     
-  if (target.getAttribute('placeholder') === 'Сумма') {
-    if (getNumber(target.value)) {
-     return target.value;
-    } else {
-      target.value = '';
-      alert('Кажется вы ввели не число! Попробуйте еще раз!');
-    }
-    }
+    if (target.getAttribute('placeholder') === 'Сумма') {
+      if (getNumber(target.value)) {
+      return target.value;
+      } else {
+        target.value = '';
+        alert('Кажется вы ввели не число! Попробуйте еще раз!');
+      }
+      }
 
     if (target.getAttribute('placeholder') === 'Наименование' ||
       target.getAttribute('placeholder') === 'название') {
@@ -244,28 +247,26 @@ input.forEach(item => {
 
 function startBudget() {
     start.addEventListener('click', function (event) {
-    if (salaryAmount.value === '') {
-      event.preventDefault();
-      alert('Ошибка, поле "Месячный доход" должно быть заполнено')
-      return;
-    }
-    if (!isNumber(salaryAmount.value)) {
-      alert('Введите "Месячный доход" числами');
-      return;
-    }
-    appData.start();
-      start.style.display = 'none';
-      cancel.style.display = 'inline';
-      incomePlus.style.display = 'none';
-      expensesPlus.style.display = 'none';
-      data.querySelectorAll('input').forEach(item => {
-        if (item.getAttribute('type') !== "range") {
-            item.disabled = 'true';
-          }
-        }
-      );
+      if (salaryAmount.value === '') {
+        event.preventDefault();
+        alert('Ошибка, поле "Месячный доход" должно быть заполнено')
+        return;
+      }
+      if (!isNumber(salaryAmount.value)) {
+        alert('Введите "Месячный доход" числами');
+        return;
+      }
+      appData.start();
+        start.style.display = 'none';
+        cancel.style.display = 'inline';
+        incomePlus.style.display = 'none';
+        expensesPlus.style.display = 'none';
+          data.querySelectorAll('input').forEach(item => {
+            if (item.getAttribute('type') !== "range") {
+                item.disabled = 'true';
+            }
+          });
     });
-
 }
 startBudget();
 
@@ -276,7 +277,6 @@ cancel.addEventListener('click', (event) => {
   incomePlus.style.display = 'inline';
   expensesPlus.style.display = 'inline';
   appData.reset();
- 
 })
 
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
@@ -284,5 +284,4 @@ incomePlus.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('input', function () {
   periodAmount.textContent = periodSelect.value;
   incomePeriodValue.value = appData.calcPeriod();
-  appData.showResult();
 });
