@@ -227,8 +227,8 @@ class AppData {
   changePercent() {
     const valueSelect = this.value;
     if (valueSelect === 'other') {
-      depositPercent.style.display = 'inline-block';
       depositPercent.value = '';
+      depositPercent.style.display = 'inline-block';
     } else {
       depositPercent.value = '';
       depositPercent.style.display = 'none';
@@ -251,6 +251,7 @@ class AppData {
       this.deposit = false;
       depositBank.removeEventListener('change', this.changePercent);
     }
+     
   }
   reset() {
     let inputTextData = document.querySelectorAll('.data input[type = text]');
@@ -262,6 +263,7 @@ class AppData {
     depositBank.style.display = 'none';
     depositAmount.style.display = 'none';
     depositPercent.style.display = 'none';
+    depositBank.value = '';
     depositCheck.checked = false;
     depositCheck.removeAttribute('disabled');
 
