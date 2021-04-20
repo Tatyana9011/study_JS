@@ -74,7 +74,6 @@ class AppData {
     cancel.style.display = 'inline-block';
     incomePlus.style.display = 'none';
     expensesPlus.style.display = 'none';
-   // depositCheck.removeAttribute('checked');
     data.querySelectorAll('input').forEach(item => {
       if (item.getAttribute('type') !== "range") {
         item.setAttribute('disabled', 'true');
