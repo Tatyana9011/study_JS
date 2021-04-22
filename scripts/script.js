@@ -13,15 +13,9 @@ const startBtn = document.getElementById("start"),
   additionalExpensesItem = document.querySelector(".additional_expenses-item"),
   budgetDayValue = document.getElementsByClassName("budget_day-value")[0],
   budgetMonthValue = document.getElementsByClassName("budget_month-value")[0],
-  expensesMonthValue = document.getElementsByClassName(
-    "expenses_month-value"
-  )[0],
-  additionalIncomeValue = document.getElementsByClassName(
-    "additional_income-value"
-  )[0],
-  additionalExpensesValue = document.getElementsByClassName(
-    "additional_expenses-value"
-  )[0],
+  expensesMonthValue = document.getElementsByClassName("expenses_month-value")[0],
+  additionalIncomeValue = document.getElementsByClassName("additional_income-value")[0],
+  additionalExpensesValue = document.getElementsByClassName("additional_expenses-value")[0],
   incomePeriodValue = document.getElementsByClassName("income_period-value")[0],
   targetMonthValue = document.getElementsByClassName("target_month-value")[0],
   salaryAmount = document.querySelector(".salary-amount"),
@@ -132,6 +126,40 @@ class ValidationManager {
 
 class LocalStorageManager {
   //Storage methods
+  static saveCookie(dataObject) {
+    let cookieStr;
+    for (let key in dataObject) {
+      cookieStr = encodeURI(key) + "=" + encodeURI(dataObject[key]);
+      const expires = new Date(2021, 4 - 1, 23);
+      cookieStr += '; expires=' + expires.toGMTString();
+      document.cookie = cookieStr;
+    }
+    document.cookie = 'isLoad=true';
+  }
+
+  static deleteCookie() {
+    let cookies = decodeURI(document.cookie).split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i];
+      let eqPos = cookie.indexOf("=");
+      let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;";
+      document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+  }
+
+  static getCookie() {
+    let cookies = decodeURI(document.cookie).split(";");
+    let cookiesLength = cookies.length;
+    let storageDataObject = JSON.parse(localStorage.getItem(storageItemName));
+    let dataObjectLength = Object.keys(storageDataObject).length;
+
+    if (cookiesLength !== dataObjectLength + 1) {
+      this.deleteDataJSON();
+      this.deleteCookie();
+    }
+  }
+
   static saveDataJSON(dataObject) {
     localStorage.setItem(storageItemName, JSON.stringify(dataObject));
   }
@@ -184,13 +212,15 @@ class RootManager {
   }
 
   unBlockBtns() {
-    console.log("unblocked");
+    periodSelect.value = "0";
+    periodAmount.innerHTML = periodSelect.value;
     startBtn.style.display = "inline-block";
     cancel.style.display = "none";
     incomePlus.style.display = "inline-block";
     expensesPlus.style.display = "inline-block";
     data.querySelectorAll("input").forEach((item) => {
       if (item.getAttribute("type") !== "range") {
+        item.value = "";
         item.removeAttribute("disabled");
       }
     });
@@ -205,17 +235,15 @@ class RootManager {
   }
 
   calculateAndSave(dataObject) {
-    //Заносим функции в прототип
-
     this.getExpInc(dataObject);
     this.getExpensesMonth(dataObject);
     this.getAddIncExp(dataObject);
     this.getInfoDeposit(dataObject);
     this.getBudget(dataObject);
     this.showResult(dataObject);
-    //this.calcPeriod(dataObject);
 
     LocalStorageManager.saveDataJSON(dataObject);
+    LocalStorageManager.saveCookie(dataObject);
   }
 
   showResult(dataObject) {
@@ -363,25 +391,13 @@ class RootManager {
     }
   }
   reset(dataObject) {
-    let inputTextData = document.querySelectorAll(".data input[type = text]");
-
-    cancel.style.display = "none";
-    startBtn.style.display = "inline-block";
-    incomePlus.style.display = "inline-block";
-    expensesPlus.style.display = "inline-block";
+    this.unBlockBtns();
     depositBank.style.display = "none";
     depositAmount.style.display = "none";
     depositPercent.style.display = "none";
     depositBank.value = "";
     depositCheck.checked = false;
     depositCheck.removeAttribute("disabled");
-
-    inputTextData.forEach((item) => {
-      item.value = "";
-      item.removeAttribute("disabled");
-      periodSelect.value = "0";
-      periodAmount.innerHTML = periodSelect.value;
-    });
 
     for (let i = 1; i < incomeItems.length; i++) {
       incomeItems[i].remove();
@@ -412,6 +428,7 @@ class RootManager {
     incomePeriodValue.value = "";
 
     LocalStorageManager.deleteDataJSON();
+    LocalStorageManager.deleteCookie();
   }
 
   getInfoDeposit(dataObject) {
@@ -430,7 +447,6 @@ let manager = new RootManager();
 window.addEventListener("load", (event) => {
   let dataObjectOnLoad = new AppData();
   if (LocalStorageManager.isDataItemExists()) {
-    console.log("exists");
     LocalStorageManager.loadDataJSON(dataObjectOnLoad);
     manager.showResult(dataObjectOnLoad);
     manager.blockBtns();
@@ -438,7 +454,11 @@ window.addEventListener("load", (event) => {
     manager.unBlockBtns();
   }
   manager.addEventListeners(dataObjectOnLoad);
-  console.log("The page has fully loaded");
 });
+
+if (LocalStorageManager.isDataItemExists()) {
+  LocalStorageManager.getCookie();
+}
+
 
 console.log(dataObject1);
