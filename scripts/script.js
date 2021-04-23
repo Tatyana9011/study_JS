@@ -130,7 +130,7 @@ class LocalStorageManager {
     let cookieStr;
     for (let key in dataObject) {
       cookieStr = encodeURI(key) + "=" + encodeURI(dataObject[key]);
-      const expires = new Date(2021, 4 - 1, 23);
+      const expires = new Date(2021, 5, 25);
       cookieStr += '; expires=' + expires.toGMTString();
       document.cookie = cookieStr;
     }
@@ -409,18 +409,8 @@ class RootManager {
     expensesPlus.style.display = "block";
     incomePlus.style.display = "block";
 
-    dataObject.budget = 0;
-    dataObject.budgetDay = 0;
-    dataObject.income = {};
-    dataObject.incomeMonth = 0;
-    dataObject.addIncome = [];
-    dataObject.expenses = {};
-    dataObject.addExpenses = [];
-    dataObject.deposit = false;
-    dataObject.percentDeposit = 0;
-    dataObject.moneyDeposit = 0;
-    dataObject.budgetMonth = 0;
-    dataObject.expensesMonth = 0;
+    let newObject = new AppData();
+    Object.assign(dataObject, newObject);
 
     this.showResult(dataObject);
 
@@ -462,3 +452,7 @@ if (LocalStorageManager.isDataItemExists()) {
 
 
 console.log(dataObject1);
+//6) Если пользователь удаляет хотя бы одну из кук или она не
+//соответствует тому, что храниться в localStorage(кука name должна равняться свойству 
+//name в локальном хранилище), тогда принудительно удаляем наши куки и локальное 
+//хранилище и программа запускается ПОЛНОСТЬЮ заново. (очищается объект от данных)
