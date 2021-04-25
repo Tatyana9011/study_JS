@@ -148,13 +148,29 @@ class LocalStorageManager {
     }
   }
 
-  static getCookie() {
+  static checkedNameCookie() {
+    let boolean = [];
     let cookies = decodeURI(document.cookie).split(";");
     let cookiesLength = cookies.length;
     let storageDataObject = JSON.parse(localStorage.getItem(storageItemName));
     let dataObjectLength = Object.keys(storageDataObject).length;
+    cookies = cookies.join(",");
 
-    if (cookiesLength !== dataObjectLength + 1) {
+    Object.keys(storageDataObject).forEach(item => {
+      boolean.push(cookies.includes(item)); //12 раз тру
+    });
+    boolean.filter(item => item === 'true'); //все тру попадают в масив boolean, а фолсе если есть не попадает
+    let result = [boolean, cookiesLength, dataObjectLength];
+
+    return result;
+  }
+
+  static checkedDelete() {
+    let result = this.checkedNameCookie();
+
+    //если количествло тру(наименование елементов) будет меньше чем количесво елементов в куках 
+    //и если количество кук будет не равно количеству в  локал сторидж
+    if (result[0].length !== result[2] || (result[1] - 1) !== result[2]) {
       this.deleteDataJSON();
       this.deleteCookie();
     }
@@ -447,12 +463,5 @@ window.addEventListener("load", (event) => {
 });
 
 if (LocalStorageManager.isDataItemExists()) {
-  LocalStorageManager.getCookie();
+  LocalStorageManager.checkedDelete();
 }
-
-
-console.log(dataObject1);
-//6) Если пользователь удаляет хотя бы одну из кук или она не
-//соответствует тому, что храниться в localStorage(кука name должна равняться свойству 
-//name в локальном хранилище), тогда принудительно удаляем наши куки и локальное 
-//хранилище и программа запускается ПОЛНОСТЬЮ заново. (очищается объект от данных)
