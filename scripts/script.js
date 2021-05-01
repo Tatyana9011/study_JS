@@ -422,9 +422,6 @@ class RootManager {
       expensesItems[i].remove();
     }
 
-    expensesPlus.style.display = "block";
-    incomePlus.style.display = "block";
-
     let newObject = new AppData();
     Object.assign(dataObject, newObject);
 
