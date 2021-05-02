@@ -422,8 +422,7 @@ class RootManager {
       expensesItems[i].remove();
     }
 
-    let newObject = new AppData();
-    Object.assign(dataObject, newObject);
+    Object.assign(dataObject, new AppData());
 
     this.showResult(dataObject);
 
